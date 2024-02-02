@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "tcp-dummy-services"
+version = "0.1.0"
+description = "Dummy services to test cloud providers"
+authors = ["Lino Figueroa <impalah@gmail.com>"]
+readme = "README.md"
+packages = [{include = "tcp_dummy_services", from = "src"}]
+
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+pytest-mock = "^3.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
