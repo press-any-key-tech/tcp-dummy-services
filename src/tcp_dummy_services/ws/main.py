@@ -1,26 +1,19 @@
-import asyncio
-import argparse
 
 from tcp_dummy_services.core import logger
 from tcp_dummy_services.core import settings
-
-import sys
-
 
 from fastapi import FastAPI, HTTPException, WebSocket
 from pydantic import BaseModel
 from typing import Dict
 import json
 
+from tcp_dummy_services.domain.entities import Thing, Response
+
+
 app: FastAPI = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 
 
-class MyTest(BaseModel):
-    id: str
-    name: str
-
-
-tests: Dict[str, MyTest] = {}
+things: Dict[str, Thing] = {}
 
 
 # TODO: reduce congnitive complexity
@@ -32,34 +25,39 @@ async def websocket_endpoint(websocket: WebSocket):
         command = json.loads(data)
 
         if command["action"] == "create":
-            test = MyTest(**command["data"])
-            if test.id in tests:
-                await websocket.send_text("MyTest already exists")
+            thing = Thing(**command["data"])
+            if thing.id in things:
+                response = Response(status=400, message="Thing already exists")
             else:
-                tests[test.id] = test
-                logger.info(f"MyTest created: {test.model_dump_json()}")
-                await websocket.send_text("MyTest created")
+                things[thing.id] = thing
+                logger.info(f"Thing created: {thing.model_dump_json()}")
+                response = Response(status=201, message="Thing created")
 
         elif command["action"] == "read":
-            if command["id"] in tests:
-                logger.info(f"MyTest read: {tests[command["id"]].model_dump_json()}")
-                await websocket.send_text(tests[command["id"]].model_dump_json())
+            if command["id"] in things:
+                logger.info(f"Thing read: {things[command["id"]].model_dump_json()}")
+                
+                response = Response(status=200, message=things[command["id"]].model_dump_json())                
             else:
-                await websocket.send_text("MyTest not found")
+                response = Response(status=404, message="Thing not found")
 
         elif command["action"] == "update":
-            test = MyTest(**command["data"])
-            if test.id in tests:
-                tests[test.id] = test
-                logger.info(f"MyTest updated: {test.model_dump_json()}")                
-                await websocket.send_text("MyTest updated")
+            thing = Thing(**command["data"])
+            if thing.id in things:
+                things[thing.id] = thing
+                logger.info(f"Thing updated: {thing.model_dump_json()}")                
+                response = Response(status=200, message="Thing updated")
             else:
-                await websocket.send_text("MyTest not found")
+                response = Response(status=404, message="Thing not found")
 
         elif command["action"] == "delete":
-            if command["id"] in tests:
-                del tests[command["id"]]
-                logger.info(f"MyTest deleted: {command["id"]}")
-                await websocket.send_text("MyTest deleted")
+            if command["id"] in things:
+                del things[command["id"]]
+                logger.info(f"Thing deleted: {command["id"]}")
+                response = Response(status=200, message="Thing deleted")
             else:
-                await websocket.send_text("MyTest not found")
+                response = Response(status=404, message="Thing not found")
+        else:
+            response = Response(status=400, message="Invalid action")
+        
+        await websocket.send_text(response.model_dump_json())
