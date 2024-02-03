@@ -63,29 +63,25 @@ Remove dependency from the given group
 
 ```
 
-poetry run python ./src/aws_tcp_dummy_services/ 7000
+poetry run python ./src/aws_tcp_dummy_services/
 
 ```
 
 ### Run HTTP project from command line
 
 ```
-uvicorn tcp_dummy_services.http.main:app --host 0.0.0.0 --port 8080
+uvicorn tcp_dummy_services.http.main:app --host 0.0.0.0 --port 8000
 ```
 
+### Run WS project from command line
 
-
-
+```
+uvicorn tcp_dummy_services.ws.main:app --host 0.0.0.0 --port 8000
+```
 
 ### Debug project from VS Code
 
-First create a .env file in the root folder or copy the existing .env.example and set the required variables
-
-Then use the Launch option from Visual Studio Code
-
-## Tests
-
-### Debug From VS Code
+Create an .env file in the root folder with te configuration you want to apply.
 
 Get the path of the virtual environment created by poetry:
 
@@ -93,7 +89,15 @@ Get the path of the virtual environment created by poetry:
 poetry env info -p
 ```
 
-Set in visual studio code the default interpreter to the virtual environment created by poetry.(SHIT+CTRL+P Select interpreter)
+Set in visual studio code the default interpreter to the virtual environment created by poetry.(SHIFT+CTRL+P/SHIFT+COMMAND+P, Select interpreter)
+
+Then use the Launch option from Visual Studio Code
+
+
+## Tests
+
+### Debug From VS Code
+
 
 Launch "Pytest launch" from the run/debug tab.
 
@@ -114,13 +118,28 @@ docker build -f ./docker/Dockerfile -t tcp-dummy-services:latest .
 From root directory execute:
 
 ```bash
-docker run -d -p 7000:7000 --name tcp-dummy-services tcp-dummy-services:latest
+
+# HTTP
+docker run -d -p 8000:8000 --name tcp-dummy-services tcp-dummy-services:latest sh -c "uvicorn tcp_dummy_services.http.main:app --host 0.0.0.0 --port 8000"
+
+# Websocket
+docker run -d -p 8001:8001 --name tcp-dummy-services tcp-dummy-services:latest sh -c "uvicorn tcp_dummy_services.ws.main:app --host 0.0.0.0 --port 8001"
+
+# TCP
+docker run -d -p 7001:7001 --name tcp-dummy-services tcp-dummy-services:latest sh -c "/code/tcp.sh"
+
 ```
 
 Change entrypoint to execute both http and ws services
 
+### Docker Compose
 
-Do not use "localhost" as LOCAL_SERVER_IP, use your local IP address instead. Docker container will not be able to connect to your local database otherwise.
+Set environment variables
+
+```bash
+docker-compose up -d --build
+
+```
 
 
 ## Test websockets

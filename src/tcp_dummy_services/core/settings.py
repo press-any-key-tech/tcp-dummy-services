@@ -34,5 +34,7 @@ class Settings:
         config("CORS_ALLOWED_HEADERS", cast=str, default='["*"]')
     )
 
+    TCP_PORTS: str = config("TCP_PORTS", cast=str, default="7001")
+
 
 settings = Settings()

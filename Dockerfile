@@ -34,6 +34,8 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./src /code
 
-# CMD ["sh", "-c", "uvicorn aws_iac_generator.main:app --host 0.0.0.0 --port $PORT"]
+RUN chmod +x /code/tcp.sh
 
-CMD ["sh", "-c", "python /code/tcp_dummy_services/ --host 0.0.0.0 7000"]
+# CMD ["sh", "-c", "uvicorn cp_dummy_services.http.main:app --host 0.0.0.0 --port 8000"]
+# CMD ["sh", "-c", "uvicorn cp_dummy_services.ws.main:app --host 0.0.0.0 --port 8000"]
+# CMD ["sh", "-c", "python /code/tcp_dummy_services/ --host 0.0.0.0 7001"]

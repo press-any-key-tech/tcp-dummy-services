@@ -1,7 +1,7 @@
 import asyncio
 import argparse
 
-from tcp_dummy_services.core import logger
+from tcp_dummy_services.core import logger, settings
 import sys
 
 
@@ -31,24 +31,28 @@ async def handle_client(reader, writer):
         await writer.wait_closed()
 
 
+async def start_server(host, port):
+    server = await asyncio.start_server(handle_client, host, port)
+
+    addr = server.sockets[0].getsockname()
+    logger.info(f"Serving on {addr}")
+
+    async with server:
+        await server.serve_forever()
+
+
 async def main(host, start_port, end_port):
+    tasks = []
     for port in range(start_port, end_port + 1):
-        server = await asyncio.start_server(handle_client, host, port)
+        tasks.append(asyncio.create_task(start_server(host, port)))
 
-        addr = server.sockets[0].getsockname()
-        logger.info(f"Serving on {addr}")
-
-        async with server:
-            await server.serve_forever()
+    await asyncio.gather(*tasks)
 
 
 if __name__ == "__main__":
     # TODO: Change argument parsing to another function
     parser = argparse.ArgumentParser(description="Asyncio Server")
-    parser.add_argument(
-        "ports",
-        help="The port or range of ports to start the server on. Format: start-end or port",
-    )
+
     parser.add_argument(
         "--host",
         default="0.0.0.0",
@@ -58,10 +62,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Check if ports argument is a range or a single port
-    if "-" in args.ports:
-        start_port, end_port = map(int, args.ports.split("-"))
+    if "-" in settings.TCP_PORTS:
+        start_port, end_port = map(int, settings.TCP_PORTS.split("-"))
     else:
-        start_port = end_port = int(args.ports)
+        start_port = end_port = int(settings.TCP_PORTS)
 
     try:
         asyncio.run(main(args.host, start_port, end_port))
