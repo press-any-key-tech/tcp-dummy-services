@@ -1,21 +1,13 @@
 import asyncio
 import argparse
 
-import logging
+from tcp_dummy_services.core import logger
 import sys
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
-)
-logger = logging.getLogger()
 
 
 async def handle_client(reader, writer):
-
     addr = writer.get_extra_info("peername")
+    addr_socket = writer.get_extra_info("sockname")
 
     try:
         while True:
@@ -24,17 +16,17 @@ async def handle_client(reader, writer):
                 break
 
             message = data.decode().strip()
-            if message == "END":
+            if message in ("END", "QUIT", "EXIT", "ADIOS", "BYE"):
                 break
 
-            logger.info(f"Received message from {addr}: {message}")
+            logger.info(f"Received message from {addr} in {addr_socket}: {message}")
 
             writer.write(data)
             await writer.drain()
     except Exception as e:
         logger.error(f"An error occurred: {e}")
     finally:
-        logger.info(f"Closing the connection on {addr}")
+        logger.info(f"Closing the connection on {addr} / {addr_socket}")
         writer.close()
         await writer.wait_closed()
 
@@ -51,7 +43,6 @@ async def main(host, start_port, end_port):
 
 
 if __name__ == "__main__":
-
     # TODO: Change argument parsing to another function
     parser = argparse.ArgumentParser(description="Asyncio Server")
     parser.add_argument(

@@ -1,10 +1,14 @@
 # tcp-dummy-services
 
-Dummy services to test connectivity on cloud providers
+Dummy services to test connectivity on cloud providers:
+- TCP echo service
+- HTTP crud service
+- WEBSOCKETS crud service
 
 ## Technology Stack:
 
 - Python
+- Fastapi
 - Docker
 - Pytest (\*)
 - PostgreSql/Mysql
@@ -45,13 +49,23 @@ poetry remove PIP_PACKAGE [-G group.name]
 
 Remove dependency from the given group
 
-### Run project from command line
+### Run TCP project from command line
 
 ```
 
-poetry run python .\src\aws_tcp_dummy_services\ 7000
+poetry run python ./src/aws_tcp_dummy_services/ 7000
 
 ```
+
+### Run HTTP project from command line
+
+```
+uvicorn tcp_dummy_services.http.main:app --host 0.0.0.0 --port 8080
+```
+
+
+
+
 
 ### Debug project from VS Code
 
@@ -92,5 +106,8 @@ From root directory execute:
 ```bash
 docker run -d -p 7000:7000 --name tcp-dummy-services tcp-dummy-services:latest
 ```
+
+Change entrypoint to execute both http and ws services
+
 
 Do not use "localhost" as LOCAL_SERVER_IP, use your local IP address instead. Docker container will not be able to connect to your local database otherwise.

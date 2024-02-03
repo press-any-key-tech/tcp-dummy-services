@@ -1,0 +1,48 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Tcp Dummy Services - Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Tcp Dummy Services Pytest",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "cwd": "${workspaceRoot}/",
+      "args": ["tests"]
+    },
+    {
+      "name": "Tcp Dummy Services Http",
+      "type": "python",
+      "request": "launch",
+      "module": "uvicorn",
+      "cwd": "${workspaceRoot}/src/tcp_dummy_services/http/",
+      "args": ["main:app", "--reload", "--port", "8000"]
+    },
+    {
+      "name": "Tcp Dummy Services WS",
+      "type": "python",
+      "request": "launch",
+      "module": "uvicorn",
+      "cwd": "${workspaceRoot}/src/tcp_dummy_services/ws/",
+      "args": ["main:app", "--reload", "--port", "8000"]
+    },
+    {
+      "name": "Tcp Dummy Services MyPy",
+      "type": "python",
+      "request": "launch",
+      "module": "mypy",
+      "cwd": "${workspaceRoot}/",
+      "args": ["--ignore-missing-imports", "src/"]
+    }
+  ]
+}
