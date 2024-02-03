@@ -1,17 +1,27 @@
 # tcp-dummy-services
 
-Dummy services to test connectivity on cloud providers:
+Dummy services for testing connectivity on cloud providers:
 - TCP echo service
 - HTTP crud service
 - WEBSOCKETS crud service
+
+## A bit of history
+
+Some time ago, I had to conduct a proof of concept to determine the best way to publish several dozen services, of different types, on the internet: HTTP, WebSocket, and TCP in general.
+
+Testing with the actual services was almost impossible since, at that time, they were published on-premises and would require, as a first step, publishing those same services in a cloud environment.
+
+The best way to test how to configure internet connectivity securely, in this case, is to use simulated services that cover the types of connectivity to be tested.
+
+And thus, this project was born.
 
 ## Technology Stack:
 
 - Python
 - Fastapi
+- Uvicorn
 - Docker
 - Pytest (\*)
-- PostgreSql/Mysql
 
 ## Development environment
 
