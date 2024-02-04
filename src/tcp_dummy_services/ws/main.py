@@ -16,13 +16,23 @@ app: FastAPI = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VER
 things: Dict[str, Thing] = {}
 
 
-# TODO: reduce congnitive complexity
+# TODO: Refactor to reduce congnitive complexity
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
-        command = json.loads(data)
+        try:
+            command = json.loads(data)
+        except json.JSONDecodeError:
+            response = Response(status=400, message="Invalid JSON")
+            await websocket.send_text(response.model_dump_json())
+            continue
+        except Exception as e:
+            response = Response(status=500, message="Internal server error")
+            await websocket.send_text(response.model_dump_json())
+            logger.error(f"Internal server error: {e}")
+            continue
 
         if command["action"] == "create":
             thing = Thing(**command["data"])

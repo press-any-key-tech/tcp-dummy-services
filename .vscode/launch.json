@@ -6,7 +6,7 @@
   "configurations": [
     {
       "name": "Tcp Dummy Services - Python: Current File",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
@@ -14,7 +14,7 @@
     },
     {
       "name": "Tcp Dummy Services Pytest",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "pytest",
       "cwd": "${workspaceRoot}/",
@@ -22,7 +22,7 @@
     },
     {
       "name": "Tcp Dummy Services Http",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
       "cwd": "${workspaceRoot}/src/tcp_dummy_services/http/",
@@ -30,15 +30,15 @@
     },
     {
       "name": "Tcp Dummy Services WS",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
       "cwd": "${workspaceRoot}/src/tcp_dummy_services/ws/",
-      "args": ["main:app", "--reload", "--port", "8000"]
+      "args": ["main:app", "--reload", "--port", "8001"]
     },
     {
       "name": "Tcp Dummy Services MyPy",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "mypy",
       "cwd": "${workspaceRoot}/",
