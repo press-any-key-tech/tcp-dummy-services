@@ -1,6 +1,7 @@
 # tcp-dummy-services
 
 Dummy services for testing connectivity on cloud providers:
+
 - TCP echo service
 - HTTP crud service
 - WEBSOCKETS crud service
@@ -9,7 +10,7 @@ Dummy services for testing connectivity on cloud providers:
 
 Some time ago, I had to conduct a proof of concept to determine the best way to publish several dozen services, of different types, on the internet: HTTP, WebSocket, and TCP in general.
 
-Testing with the production services was almost impossible since, at that time, they were published on-premises and would require, as a first step, publishing those same services in a cloud environment.
+Testing with the production services was almost impossible because they were published on-premises and would require, as a first step, publishing those same services in a cloud environment.
 
 The best way to test how to configure internet connectivity securely, in this case, is to use simulated services that cover the types of connectivity to be tested.
 
@@ -93,11 +94,9 @@ Set in visual studio code the default interpreter to the virtual environment cre
 
 Then use the Launch option from Visual Studio Code
 
-
 ## Tests
 
 ### Debug From VS Code
-
 
 Launch "Pytest launch" from the run/debug tab.
 
@@ -141,18 +140,17 @@ docker-compose up -d --build
 
 ```
 
-
 ## Test websockets
 
 ### Create
 
 ```json
 {
-    "action": "create",
-    "data": {
-        "id": "1",
-        "name": "Test 1"
-    }
+  "action": "create",
+  "data": {
+    "id": "1",
+    "name": "Test 1"
+  }
 }
 ```
 
@@ -160,8 +158,8 @@ docker-compose up -d --build
 
 ```json
 {
-    "action": "read",
-    "id": "1"
+  "action": "read",
+  "id": "1"
 }
 ```
 
@@ -174,4 +172,3 @@ To disconnect use one of these commands (in uppercase): END, QUIT, EXIT, ADIOS, 
 ## Test HTTP
 
 Swagger explorer on /docs path. Example: http://localhost:8000/docs
-

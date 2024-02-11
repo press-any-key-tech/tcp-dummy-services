@@ -6,43 +6,65 @@ from pydantic import BaseModel
 from typing import Dict
 
 from tcp_dummy_services.domain.entities import Thing
+from tcp_dummy_services.api.v1.things.services import ReadService, WriteService
+from tcp_dummy_services.domain.exceptions import (
+    ThingNotFoundException,
+    ThingAlreadyExistsException,
+)
+
 
 app: FastAPI = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 
 
-things: Dict[str, Thing] = {}
-
-
 @app.get("/things/{id}", response_model=Thing)
-async def read_test(id: str):
-    if id not in things:
-        raise HTTPException(status_code=404, detail="Thing not found")
-    return things[id]
+async def read_thing(id: str):
+
+    try:
+        return await ReadService().get_by_id(id=id)
+    except ThingNotFoundException as e:
+        raise HTTPException(status_code=404, detail=f"Thing with id [{id}] not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/things", response_model=Dict[str, Thing])
-async def read_things():
-    return things
+async def list_things():
+    try:
+        return await ReadService().get_list()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/things", response_model=Thing)
-async def create_test(test: Thing):
-    if test.id in things:
-        raise HTTPException(status_code=400, detail="Thing already exists")
-    things[test.id] = test
-    return test
+async def create_things(test: Thing):
+
+    try:
+        return await WriteService().create(entity=test)
+
+    except ThingAlreadyExistsException as e:
+        raise HTTPException(status_code=409, detail="Thing already exists")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.put("/things/{id}", response_model=Thing)
-async def update_test(id: str, test: Thing):
-    if id not in things:
-        raise HTTPException(status_code=404, detail="Thing not found")
-    things[id] = test
-    return test
+async def update_thing(id: str, test: Thing):
+
+    try:
+        return await WriteService().update(id=id, entity=test)
+
+    except ThingNotFoundException as e:
+        raise HTTPException(status_code=404, detail=f"Thing with id [{id}] not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.delete("/things/{id}", response_model=Thing)
-async def delete_test(id: str):
-    if id not in things:
-        raise HTTPException(status_code=404, detail="Thing not found")
-    return things.pop(id)
+async def delete_thing(id: str):
+
+    try:
+        return await WriteService().delete_by_id(id=id)
+    except ThingNotFoundException as e:
+        raise HTTPException(status_code=404, detail=f"Thing with id [{id}] not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
