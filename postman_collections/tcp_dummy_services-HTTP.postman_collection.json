@@ -1,0 +1,126 @@
+{
+	"info": {
+		"_postman_id": "8593fae0-64db-4357-a58f-986670568f1d",
+		"name": "tcp_dummy_services-HTTP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16654231"
+	},
+	"item": [
+		{
+			"name": "Create Thing",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"2cM1eglPE6T7jojhiyfmCdpivxE\",\r\n  \"name\": \"Another thing\",\r\n  \"location\": \"Somewhere\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/things",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"things"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Things",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/things",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"things"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get thing by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/things/2cM6NIUP41c5SEhHXueJRzQSE4i",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"things",
+						"2cM6NIUP41c5SEhHXueJRzQSE4i"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Thing",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"2cM6NIUP41c5SEhHXueJRzQSE4i\",\r\n  \"name\": \"Modified thing\",\r\n  \"location\": \"Somewhere over the rainbow\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/things/2cM6NIUP41c5SEhHXueJRzQSE4i",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"things",
+						"2cM6NIUP41c5SEhHXueJRzQSE4i"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Thing",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/things/2cM6l0blewsXt8DsfjlHHHJ6QT9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"things",
+						"2cM6l0blewsXt8DsfjlHHHJ6QT9"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

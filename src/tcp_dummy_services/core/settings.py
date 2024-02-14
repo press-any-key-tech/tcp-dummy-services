@@ -11,7 +11,7 @@ config = Config()
 class Settings:
     """Settings for the application"""
 
-    PROJECT_NAME: str = config("PROJECT_NAME", cast=str, default="CaffeineHub")
+    PROJECT_NAME: str = config("PROJECT_NAME", cast=str, default="TcpDummyServices")
     PROJECT_VERSION: str = config("PROJECT_VERSION", cast=str, default="1.0.0.000")
 
     LOG_LEVEL: str = config("LOG_LEVEL", cast=str, default="INFO").upper()

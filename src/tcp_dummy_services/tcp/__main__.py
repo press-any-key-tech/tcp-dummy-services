@@ -51,7 +51,7 @@ async def main(host, start_port, end_port):
 
 if __name__ == "__main__":
     # TODO: Change argument parsing to another function
-    parser = argparse.ArgumentParser(description="Asyncio Server")
+    parser = argparse.ArgumentParser(description="Asyncion TCP Server")
 
     parser.add_argument(
         "--host",
