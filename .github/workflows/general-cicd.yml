@@ -3,10 +3,8 @@ name: general-cicd
 on:
   push:
     branches:
-      - "*"
-  pull_request:
-    branches:
-      - "*"
+      - main
+      
   workflow_dispatch:
     inputs:
       logLevel:
