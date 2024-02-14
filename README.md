@@ -142,6 +142,8 @@ docker-compose up -d --build
 
 ## Test websockets
 
+Tested using Postman on url `ws://localhost:8001/ws`
+
 ### Create
 
 ```json
@@ -163,7 +165,35 @@ docker-compose up -d --build
 }
 ```
 
+### Update
+
+```json
+{
+  "action": "update",
+  "id": "1",
+  "data": {
+    "id": "1",
+    "name": "Test 1 Modified"
+  }
+}
+```
+
+### Delete
+
+```json
+{
+  "action": "delete",
+  "id": "1"
+}
+```
+
 ## Test TCP (Echo)
+
+Tested using telnet on port 7001
+
+```bash
+telnet localhost 7001
+```
 
 Send characters and finish each line with ENTER.
 

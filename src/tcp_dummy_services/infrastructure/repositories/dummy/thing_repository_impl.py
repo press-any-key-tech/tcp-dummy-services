@@ -8,20 +8,21 @@ from tcp_dummy_services.domain.exceptions import ThingAlreadyExistsException
 from tcp_dummy_services.core.logging import logger
 from ksuid import Ksuid
 
+from tcp_dummy_services.repository.interfaces import ThingRepository
 
-class ThingRepositoryImpl(PotRepository):
+
+class ThingRepositoryImpl(ThingRepository):
     """Repository implementation for Thing"""
 
     things: Dict[str, Thing]
 
     def __init__(self):
 
-        self.things = []
+        self.things = {}
 
     async def create(
         self,
         *,
-        # current_user: User,
         entity: Thing,
     ) -> Thing:
         """
@@ -58,7 +59,7 @@ class ThingRepositoryImpl(PotRepository):
 
         return list(self.things.values())
 
-    async def get_by_id(self, id: str) -> Pot:
+    async def get_by_id(self, id: str) -> Thing:
         """Gets thing by id
 
         Args:
@@ -96,7 +97,6 @@ class ThingRepositoryImpl(PotRepository):
         *,
         id: str,
         new_entity: Thing,
-        # current_user: User
     ) -> Optional[Thing]:
         """UJpdate Thing
 

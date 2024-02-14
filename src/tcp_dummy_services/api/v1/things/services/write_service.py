@@ -40,7 +40,7 @@ class WriteService:
         logger.debug("Entering. id: %s", id)
 
         try:
-            await things_repository.delete_by_id(id=id)
+            await things_repository.delete(id=id)
         except ThingNotFoundException:
             # Domain exception raise if thing doesn't exists
             raise ThingNotFoundException(f"Thing with id [{id}] not found")
@@ -67,7 +67,7 @@ class WriteService:
         logger.debug("Entering. id: %s entity: %s", id, entity)
 
         try:
-            result: Thing = await things_repository.update(id=id, entity=entity)
+            result: Thing = await things_repository.update(id=id, new_entity=entity)
             return result
         except ThingNotFoundException:
             # Domain exception raise if thing doesn't exists

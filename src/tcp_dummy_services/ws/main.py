@@ -1,14 +1,21 @@
-
 from tcp_dummy_services.core import logger
 from tcp_dummy_services.core import settings
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
-from typing import Dict
+from typing import Dict, Tuple
 import json
 
 from tcp_dummy_services.domain.entities import Thing, Response
 from tcp_dummy_services.core.ws import manager
+from tcp_dummy_services.domain.exceptions import DataDecodingException
+from tcp_dummy_services.ws.ws_api import (
+    ws_create,
+    ws_read,
+    ws_update,
+    ws_delete,
+    ws_list,
+)
 
 app: FastAPI = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 
@@ -16,7 +23,47 @@ app: FastAPI = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VER
 things: Dict[str, Thing] = {}
 
 
-# TODO: Refactor to reduce congnitive complexity
+def load_data(data: str) -> Dict:
+    """Loads data from str string
+
+    Args:
+        data (str): _description_
+
+    Returns:
+        Dict: _description_
+    """
+
+    try:
+        payload = json.loads(data)
+        return payload
+    except json.JSONDecodeError:
+        raise DataDecodingException(
+            response=Response(status=400, message="Invalid JSON")
+        )
+    except Exception as e:
+        logger.error(f"Internal server error: {e}")
+        raise DataDecodingException(
+            response=Response(status=500, message="Internal server error")
+        )
+
+
+def decode_parameters(payload: Dict) -> Tuple[str, str]:
+    """Loads data from str string
+
+    Args:
+        data (str): _description_
+
+    Returns:
+        Dict: _description_
+    """
+
+    # Switch command action
+    return (
+        Thing(**payload["data"]) if "data" in payload else None,
+        payload["id"] if "id" in payload else None,
+    )
+
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
@@ -26,55 +73,29 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             data = await websocket.receive_text()
             try:
-                command = json.loads(data)
-            except json.JSONDecodeError:
-                response = Response(status=400, message="Invalid JSON")
-                await websocket.send_text(response.model_dump_json())
-                continue
-            except Exception as e:
-                response = Response(status=500, message="Internal server error")
-                await websocket.send_text(response.model_dump_json())
-                logger.error(f"Internal server error: {e}")
-                continue
+                payload = load_data(data)
 
-            if command["action"] == "create":
-                thing = Thing(**command["data"])
-                if thing.id in things:
-                    response = Response(status=400, message="Thing already exists")
-                else:
-                    things[thing.id] = thing
-                    logger.info(f"Thing created: {thing.model_dump_json()}")
-                    response = Response(status=201, message="Thing created")
+                logger.debug(f"Received data: {payload}")
+                entity, entity_id = decode_parameters(payload)
 
-            elif command["action"] == "read":
-                if command["id"] in things:
-                    logger.info(f"Thing read: {things[command["id"]].model_dump_json()}")
-                    
-                    response = Response(status=200, message=things[command["id"]].model_dump_json())                
+                if payload["action"] == "create":
+                    response = await ws_create(entity=entity)
+                elif payload["action"] == "read":
+                    response = await ws_read(id=entity_id)
+                elif payload["action"] == "update":
+                    response = await ws_update(id=entity_id, entity=entity)
+                elif payload["action"] == "delete":
+                    response = await ws_delete(id=entity_id)
                 else:
-                    response = Response(status=404, message="Thing not found")
+                    response = Response(status=400, message="Invalid action")
 
-            elif command["action"] == "update":
-                thing = Thing(**command["data"])
-                if thing.id in things:
-                    things[thing.id] = thing
-                    logger.info(f"Thing updated: {thing.model_dump_json()}")                
-                    response = Response(status=200, message="Thing updated")
-                else:
-                    response = Response(status=404, message="Thing not found")
+            except DataDecodingException as e:
+                response = e.response
+            except Exception as ex:
+                response = Response(status=500, message=f"Server error: {str(ex)}")
 
-            elif command["action"] == "delete":
-                if command["id"] in things:
-                    del things[command["id"]]
-                    logger.info(f"Thing deleted: {command["id"]}")
-                    response = Response(status=200, message="Thing deleted")
-                else:
-                    response = Response(status=404, message="Thing not found")
-            else:
-                response = Response(status=400, message="Invalid action")
-            
             await websocket.send_text(response.model_dump_json())
 
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        logger.debug(f"Client disconnected")
+        logger.debug("Client disconnected")
