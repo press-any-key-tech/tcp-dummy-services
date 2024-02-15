@@ -3,7 +3,11 @@ services:
   http:
     networks:
       - app-network
-    image: pressanykeytech/tcp-dummy-services:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        package_name: tcp_dummy_services
     command:
       [
         "uvicorn",
@@ -21,7 +25,11 @@ services:
   ws:
     networks:
       - app-network
-    image: pressanykeytech/tcp-dummy-services:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        package_name: tcp_dummy_services
     command:
       [
         "uvicorn",
@@ -40,8 +48,16 @@ services:
   tcp:
     networks:
       - app-network
-    image: pressanykeytech/tcp-dummy-services:latest
-    command: [ "python", "/code/tcp_dummy_services/tcp/" ]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        package_name: tcp_dummy_services
+    command:
+      [
+        "python",
+        "/code/tcp_dummy_services/tcp/"
+      ]
     ports:
       - 7001:7001
       - 7002:7002
