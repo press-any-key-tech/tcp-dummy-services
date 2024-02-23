@@ -17,7 +17,11 @@ from tcp_dummy_services.ws.ws_api import (
     ws_list,
 )
 
-app: FastAPI = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
+app: FastAPI = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.PROJECT_VERSION,
+    root_path=settings.ROOT_PATH,
+)
 
 
 things: Dict[str, Thing] = {}
@@ -64,7 +68,7 @@ def decode_parameters(payload: Dict) -> Tuple[str, str]:
     )
 
 
-@app.websocket("/ws")
+@app.websocket("/")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
 

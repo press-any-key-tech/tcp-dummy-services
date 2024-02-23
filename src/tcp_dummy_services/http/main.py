@@ -45,5 +45,9 @@ def start_application(app: FastAPI):
     return app
 
 
-app: FastAPI = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
+app: FastAPI = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.PROJECT_VERSION,
+    root_path=settings.ROOT_PATH,
+)
 start_application(app)

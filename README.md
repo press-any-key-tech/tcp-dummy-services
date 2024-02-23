@@ -109,7 +109,11 @@ You can set breakpoints and inspections
 From root directory execute:
 
 ```bash
-docker build -f ./docker/Dockerfile -t tcp-dummy-services:latest .
+docker build -f ./Dockerfile -t tcp-dummy-services:latest .
+```
+
+```powershell
+docker build -f .\Dockerfile -t tcp-dummy-services:latest .
 ```
 
 ### Run
@@ -142,7 +146,7 @@ docker-compose up -d --build
 
 ## Test websockets
 
-Tested using Postman on url `ws://localhost:8001/ws`
+Tested using Postman on url `ws://localhost:8001/`
 
 ### Create
 

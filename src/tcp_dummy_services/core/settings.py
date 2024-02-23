@@ -34,6 +34,9 @@ class Settings:
         config("CORS_ALLOWED_HEADERS", cast=str, default='["*"]')
     )
 
+    # Root path for the application (is it behing a proxy?)
+    ROOT_PATH: str = config("ROOT_PATH", cast=str, default="")
+
     TCP_PORTS: str = config("TCP_PORTS", cast=str, default="7001")
 
 
