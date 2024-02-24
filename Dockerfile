@@ -14,7 +14,7 @@ RUN cd projects/${package_name} && poetry export -f requirements.txt --output re
 # ---------------------------------
 
 # Build execution container
-FROM python:3.12
+FROM python:3.12-alpine
 
 # ARGs are needed for all the stages
 ARG package_name=tcp_dummy_services

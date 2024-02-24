@@ -18,6 +18,8 @@ services:
     environment:
       - LOG_LEVEL=DEBUG
       - LOGGER_NAME=tcp-dummy-services
+      - STUFF_ENABLED=false
+
   ws:
     networks:
       - app-network
@@ -37,6 +39,27 @@ services:
       - LOG_LEVEL=DEBUG
       - LOGGER_NAME=tcp-dummy-services
 
+  remote_http:
+    networks:
+      - app-network
+    image: pressanykeytech/tcp-dummy-services:latest
+    command:
+      [
+        "uvicorn",
+        "tcp_dummy_services.http.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8002"
+      ]
+    ports:
+      - 8002:8002
+    environment:
+      - LOG_LEVEL=DEBUG
+      - LOGGER_NAME=tcp-dummy-services
+      - STUFF_ENABLED=true
+      - THINGS_ENABLED=false
+      - THINGS_BASE_URL=http://http:8000
   tcp:
     networks:
       - app-network
