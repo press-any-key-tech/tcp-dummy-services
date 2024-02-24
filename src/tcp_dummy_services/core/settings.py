@@ -39,5 +39,14 @@ class Settings:
 
     TCP_PORTS: str = config("TCP_PORTS", cast=str, default="7001")
 
+    # Stuff related configurations
+    # Stuff controller enabled
+    STUFF_ENABLED: bool = config("STUFF_ENABLED", cast=bool, default=False)
+
+    # Things controller enabled
+    THINGS_ENABLED: bool = config("THINGS_ENABLED", cast=bool, default=True)
+    # Things url, for Remote calls from Stuff
+    THINGS_BASE_URL: str = config("THINGS_BASE_URL", cast=str, default=None)
+
 
 settings = Settings()
