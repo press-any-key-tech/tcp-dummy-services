@@ -15,6 +15,7 @@ colorlog = ">=6.8.2"
 py-automapper = ">=1.2.3"
 svix-ksuid = ">=0.6.2"
 aiohttp = "^3.9.3"
+locust = "^2.23.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0.0"
