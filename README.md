@@ -116,6 +116,18 @@ docker build -f ./Dockerfile -t tcp-dummy-services:latest .
 docker build -f .\Dockerfile -t tcp-dummy-services:latest .
 ```
 
+### Build version for Google Cloud Run
+
+This special version requires to use the 8080 port and only allows the http protocol.
+
+```bash
+docker build -f ./Dockerfile.gcr -t tcp-dummy-services:gcr .
+```
+
+```powershell
+docker build -f .\Dockerfile.gcr -t tcp-dummy-services:gcr .
+```
+
 ### Run
 
 From root directory execute:
@@ -130,6 +142,10 @@ docker run -d -p 8001:8001 --name tcp-dummy-services tcp-dummy-services:latest s
 
 # TCP
 docker run -d -p 7001:7001 --name tcp-dummy-services tcp-dummy-services:latest sh -c "/code/tcp.sh"
+
+# Google Cloud Run
+docker run -d -p 8080:8080 --name tcp-dummy-services-gcr tcp-dummy-services:gcr
+
 
 ```
 
