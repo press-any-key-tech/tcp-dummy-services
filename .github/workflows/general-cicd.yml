@@ -66,5 +66,5 @@ jobs:
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
             ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.DOCKER_HUB_REPOSITORY }}:${{ env.IMAGE_TAG }}
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.DOCKER_HUB_REPOSITORY }}:latest
+            ${{ vars.DOCKER_HUB_REPOSITORY }}:${{ env.IMAGE_TAG }}
+            ${{ vars.DOCKER_HUB_REPOSITORY }}:latest
