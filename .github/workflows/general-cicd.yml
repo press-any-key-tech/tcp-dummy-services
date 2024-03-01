@@ -31,7 +31,11 @@ jobs:
         run: echo "IMAGE_TAG is ${{ env.IMAGE_TAG }}"
 
       - name: Display Env vars
-        run: echo "AWS_REGION is ${{ vars.AWS_REGION }}"
+        run: |
+          echo "AWS_REGION is ${{ vars.AWS_REGION }}"
+          echo "ECR_REPOSITORY is ${{ vars.ECR_REPOSITORY }}"
+          echo "DOCKER_HUB_REPOSITORY is ${{ vars.DOCKER_HUB_REPOSITORY }}"
+          echo "DOCKER_HUB_USERNAME is ${{ secrets.DOCKER_HUB_USERNAME }}"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -60,7 +64,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.DOCKER_ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.DOCKER_ECR_REPOSITORY }}:latest
+            ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.DOCKER_HUB_REPOSITORY }}:${{ env.IMAGE_TAG }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.DOCKER_HUB_REPOSITORY }}:latest
