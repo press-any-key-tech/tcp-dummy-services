@@ -5,6 +5,9 @@ on:
   #   branches:
   #     - main
 
+  release:
+    types: [created]
+
   workflow_dispatch:
     inputs:
       logLevel:
@@ -21,11 +24,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Read VERSION.txt and set ImageTag
+      - name: Print release information
+        run: |
+          echo "Release tag: ${{ github.event.release.tag_name }}"
+          echo "Release description: ${{ github.event.release.body }}"
+
+      - name: Set ImageTag
         id: version
         run: |
-          VERSION=$(cat VERSION.txt)
-          echo "IMAGE_TAG=${VERSION}.${{ github.run_number }}" >> $GITHUB_ENV
+          if [[ "${{ github.event.release.tag_name }}" != "" ]]; then
+            echo "IMAGE_TAG=${{ github.event.release.tag_name }} >> $GITHUB_ENV
+          else
+            echo "IMAGE_TAG=0.0.0" >> $GITHUB_ENV
+          fi
+
+      # - name: Read VERSION.txt and set ImageTag
+      #   id: version
+      #   run: |
+      #     VERSION=$(cat VERSION.txt)
+      #     echo "IMAGE_TAG=${VERSION}.${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Display Image Tag
         run: echo "IMAGE_TAG is ${{ env.IMAGE_TAG }}"
