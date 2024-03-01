@@ -33,7 +33,7 @@ jobs:
         id: version
         run: |
           if [[ "${{ github.event.release.tag_name }}" != "" ]]; then
-            echo "IMAGE_TAG=${{ github.event.release.tag_name }} >> $GITHUB_ENV
+            echo "IMAGE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
           else
             echo "IMAGE_TAG=0.0.0" >> $GITHUB_ENV
           fi
