@@ -60,7 +60,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
-            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:latest
-            $DOCKERHUB_USERNAME/$DOCKERHUB_REPOSITORY:$IMAGE_TAG
-            $DOCKERHUB_USERNAME/$DOCKERHUB_REPOSITORY:latest
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+            $DOCKERHUB_USERNAME/${{ env.DOCKERHUB_REPOSITORY }}:${{ env.IMAGE_TAG }}
+            $DOCKERHUB_USERNAME/${{ env.DOCKERHUB_REPOSITORY }}:latest
