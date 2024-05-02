@@ -29,22 +29,24 @@ from tcp_dummy_services.domain.exceptions import (
 api_router = APIRouter()
 
 
-@api_router.get("/things/{id}", response_model=Thing)
-async def read_thing(id: str):
-
+@api_router.get("/things", response_model=List[Thing])
+async def list_things():
     try:
-        return await ReadService().get_by_id(id=id)
-    except ThingNotFoundException as e:
-        raise HTTPException(status_code=404, detail=f"Thing with id [{id}] not found")
+        logger.exception("Entering get things (list)")
+        return await ReadService().get_list()
     except Exception as e:
         logger.exception("Not controlled error")
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@api_router.get("/things", response_model=List[Thing])
-async def list_things():
+@api_router.get("/things/{id}", response_model=Thing)
+async def read_thing(id: str):
+
     try:
-        return await ReadService().get_list()
+        logger.exception("Entering get things (one)")
+        return await ReadService().get_by_id(id=id)
+    except ThingNotFoundException as e:
+        raise HTTPException(status_code=404, detail=f"Thing with id [{id}] not found")
     except Exception as e:
         logger.exception("Not controlled error")
         raise HTTPException(status_code=500, detail=str(e))
