@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tcp-dummy-services"
-version = "1.0.2"
+version = "1.0.3"
 description = "Dummy services to test cloud providers"
 authors = ["Lino Figueroa <impalah@gmail.com>"]
 readme = "README.md"
