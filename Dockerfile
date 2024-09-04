@@ -23,6 +23,9 @@ ARG module_name=tcp_dummy_services
 WORKDIR /code
 ENV PYTHONPATH=/code
 
+# Install build dependencies
+RUN apk add --no-cache gcc musl-dev linux-headers
+
 # Install requirements
 COPY --from=requirements-stage /tmp/projects/${package_name}/requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
