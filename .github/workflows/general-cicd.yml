@@ -88,18 +88,22 @@ jobs:
             ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
             ${{ vars.DOCKER_HUB_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
-      - name: Get image digest
-        id: get-digest
+      - name: Get image digests
+        id: get-digests
         run: |
-          DIGEST=$(docker buildx imagetools inspect ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} --format '{{.Manifest.Digest}}')
-          echo "DIGEST=$DIGEST" >> $GITHUB_ENV
+          DIGEST_AMD64=$(docker buildx imagetools inspect ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} --format '{{json .Manifest.Manifests}}' | jq -r '.[] | select(.platform.architecture == "amd64") | .digest')
+          DIGEST_ARM64=$(docker buildx imagetools inspect ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} --format '{{json .Manifest.Manifests}}' | jq -r '.[] | select(.platform.architecture == "arm64") | .digest')
+          echo "DIGEST_AMD64=$DIGEST_AMD64" >> $GITHUB_ENV
+          echo "DIGEST_ARM64=$DIGEST_ARM64" >> $GITHUB_ENV
 
       - name: Push amd64 image
         run: |
-          docker buildx imagetools create --tag ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}-amd64 ${{ env.DIGEST }}
-          docker buildx imagetools create --tag ${{ vars.DOCKER_HUB_REPOSITORY }}:${{ env.IMAGE_TAG }}-amd64 ${{ env.DIGEST }}
+          docker buildx imagetools create --tag ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}-amd64 ${{ env.DIGEST_AMD64 }}
+          docker buildx imagetools create --tag ${{ vars.DOCKER_HUB_REPOSITORY }}:${{ env.IMAGE_TAG }}-amd64 ${{ env.DIGEST_AMD64 }}
 
       - name: Push arm64 image
         run: |
-          docker buildx imagetools create --tag ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}-arm64 ${{ env.DIGEST }}
-          docker buildx imagetools create --tag ${{ vars.DOCKER_HUB_REPOSITORY }}:${{ env.IMAGE_TAG }}-arm64 ${{ env.DIGEST }}
+          docker buildx imagetools create --tag ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}-arm64 ${{ env.DIGEST_ARM64 }}
+          docker buildx imagetools create --tag ${{ vars.DOCKER_HUB_REPOSITORY }}:${{ env.IMAGE_TAG }}-arm64 ${{ env.DIGEST_ARM64 }}
+
+          
